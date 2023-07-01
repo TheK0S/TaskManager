@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,15 +15,112 @@ using TaskManager.Model;
 
 namespace TaskManager.ViewModel
 {
-    internal class Controller
+    internal class Controller : INotifyPropertyChanged
     {
         public ObservableCollection<Border> GridsList { get; set; }
+        public ObservableCollection<OneTask> oneTasks { get; set; }
+        public ObservableCollection<OneTask> SelectedTasksList { get; set; }
+        public OneTask SelectedTask { get; set; }
+
+
+        private string Json { get; set; }
+        private string path = "taskList.json";
+
         public Controller()
         {
+            ReadFromJson();
 
+            for (int i = 0; i < 10; i++)
+                oneTasks.Add(new OneTask()
+                {
+                    Id = i + 1,
+                    Title = $"Задача № {i + 1}",
+                    Description = $"Это задача какаято важная №{i + 1} и вообще то это серьезно",
+                    Begin = DateTime.Now,
+                    End = DateTime.Now,
+                    Priority = "Высокий",
+                    IsCompleted = false
+                });
+
+            GridsList = CreateGridTaskList(oneTasks);
         }
 
-        public ObservableCollection<Border> CreateGridTaskList(List<OneTask> tasksList)
+        private CommandMain addTaskCommand;
+        public CommandMain AddTaskCommand { get; }
+        //{
+        //    get {
+        //        return AddTaskCommand ??
+        //        (addTaskCommand = new CommandMain(obj =>
+        //        {
+        //            OneTask task = new OneTask();
+        //            oneTasks.Insert(0, task);
+        //            SelectedTask = task;
+
+        //            GridsList = CreateGridTaskList(oneTasks);
+        //        }));
+        //    }
+        //}
+
+        private CommandMain removeTaskCommand;
+        public CommandMain RemoveTaskCommand
+        {
+            get
+            {
+                return RemoveTaskCommand ??
+                (removeTaskCommand = new CommandMain(obj =>
+                {
+                    if (SelectedTasksList?.Count > 0)
+                    {
+                        foreach (var selectedTask in SelectedTasksList)
+                            oneTasks.Remove(selectedTask);
+
+                        GridsList = CreateGridTaskList(oneTasks);
+                    }
+                    else
+                    {
+                        if(SelectedTask != null)
+                        {
+                            oneTasks.Remove(SelectedTask);
+                            GridsList = CreateGridTaskList(oneTasks);
+                        }
+                        else
+                            MessageBox.Show("Выберите одну или несколько задач для удаления", "Ошибка! Не выбрана задача");
+                    }
+                },
+                (obj) => oneTasks.Count > 0
+                ));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        private void WriteToJson()
+        {
+            JsonConvert.SerializeObject(oneTasks);
+            File.WriteAllText(path, Json);
+        }
+
+        private void ReadFromJson()
+        {
+            try
+            {
+                Json = File.ReadAllText(path);
+                oneTasks = JsonConvert.DeserializeObject<ObservableCollection<OneTask>>(Json);
+            }
+            catch (Exception)
+            {
+                oneTasks = new ObservableCollection<OneTask>();
+                MessageBox.Show("Список задач пуст или не существует");
+            }            
+        }
+
+        public ObservableCollection<Border> CreateGridTaskList(ObservableCollection<OneTask> tasksList)
         {
             ObservableCollection<Border> borderList = new ObservableCollection<Border>();
 
@@ -72,7 +173,7 @@ namespace TaskManager.ViewModel
 
                 // Добавляем Grid в Border и Border в окно
                 Border border = new Border();
-                border.BorderBrush = Brushes.DarkBlue;
+                border.BorderBrush = task.IsCompleted ? Brushes.Green : Brushes.DarkBlue;
                 border.BorderThickness = new Thickness(1);
                 border.Child = grid;
 

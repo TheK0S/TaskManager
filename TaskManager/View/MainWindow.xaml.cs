@@ -26,22 +26,24 @@ namespace TaskManager
         {
             InitializeComponent();
 
-            List<OneTask> oneTasks = new List<OneTask>();
+            DataContext = new Controller();
 
-            for (int i = 0; i < 10; i++)
-                oneTasks.Add(new OneTask() {
-                    Id = i + 1,
-                    Title = $"Задача № {i + 1}",
-                    Description = $"Это задача какаято важная №{i + 1} и вообще то это серьезно",
-                    Begin = DateTime.Now,
-                    End = DateTime.Now,
-                    Priority = "Высокий",
-                    IsCompleted = false
-                });
+            //List<OneTask> oneTasks = new List<OneTask>();
 
-            Controller controller = new Controller();
+            //for (int i = 0; i < 10; i++)
+            //    oneTasks.Add(new OneTask() {
+            //        Id = i + 1,
+            //        Title = $"Задача № {i + 1}",
+            //        Description = $"Это задача какаято важная №{i + 1} и вообще то это серьезно",
+            //        Begin = DateTime.Now,
+            //        End = DateTime.Now,
+            //        Priority = "Высокий",
+            //        IsCompleted = false
+            //    });
 
-            taskListView.ItemsSource = controller.CreateGridTaskList(oneTasks);
+            //Controller controller = new Controller();
+
+            //taskListView.ItemsSource = controller.CreateGridTaskList(oneTasks);
         }
         
     }

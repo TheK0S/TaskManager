@@ -42,13 +42,20 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <Calendar x:Name="calendar" Background="Black"/>
-            <Button x:Name="addTask" Content="Добавить задачу"/>
+            <Calendar x:Name="calendar" Background="Black" Margin="0 -3 0 5"/>
+            <Button x:Name="completeTask" Content="Отметить выполнено"/>
+            <Button x:Name="addTask" Content="Добавить задачу" Command="{Binding AddTaskCommand}"/>
             <Button x:Name="editTask" Content="Редактировать задачу"/>
-            <Button x:Name="removeTask" Content="Удалить выбранные"/>
+            <Button x:Name="removeTask" Content="Удалить выбранные" Command="{Binding RemoveTaskCommand}"/>
         </StackPanel>
 
-        <ListView x:Name="taskListView" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Stretch" Background="Black" Foreground="Gray">
+        <ListView x:Name="taskListView" Grid.Row="1" Grid.Column="1" 
+                  HorizontalContentAlignment="Stretch" 
+                  Background="Black"
+                  Foreground="Gray"
+                  ItemsSource="{Binding GridsList}"
+                  SelectedItem="{Binding SelectedTask}"
+                  SelectionMode="{Binding SelectedTasksList}">
             
         </ListView>
 
