@@ -54,8 +54,7 @@
                   Background="Black"
                   Foreground="Gray"
                   ItemsSource="{Binding GridsList}"
-                  SelectedItem="{Binding SelectedTask}"
-                  SelectionMode="{Binding SelectedTasksList}">
+                  SelectedIndex="{Binding SelectedTaskIndex}">
             
         </ListView>
 

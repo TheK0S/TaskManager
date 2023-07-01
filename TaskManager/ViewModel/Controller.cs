@@ -19,8 +19,8 @@ namespace TaskManager.ViewModel
     {
         public ObservableCollection<Border> GridsList { get; set; }
         public ObservableCollection<OneTask> oneTasks { get; set; }
-        public ObservableCollection<OneTask> SelectedTasksList { get; set; }
-        public OneTask SelectedTask { get; set; }
+        public ObservableCollection<int> SelectedTasksIndexList { get; set; }
+        public int SelectedTaskIndex { get; set; }
 
 
         private string Json { get; set; }
@@ -46,50 +46,52 @@ namespace TaskManager.ViewModel
         }
 
         private CommandMain addTaskCommand;
-        public CommandMain AddTaskCommand { get; }
-        //{
-        //    get {
-        //        return AddTaskCommand ??
-        //        (addTaskCommand = new CommandMain(obj =>
-        //        {
-        //            OneTask task = new OneTask();
-        //            oneTasks.Insert(0, task);
-        //            SelectedTask = task;
+        public CommandMain AddTaskCommand
+        {
+            get;
+            //get {
+            //    return AddTaskCommand ??
+            //    (addTaskCommand = new CommandMain(obj =>
+            //    {
+            //        OneTask task = new OneTask();
+            //        oneTasks.Insert(0, task);
+            //        SelectedTaskIndex = oneTasks.IndexOf(task);
 
-        //            GridsList = CreateGridTaskList(oneTasks);
-        //        }));
-        //    }
-        //}
+            //    GridsList = CreateGridTaskList(oneTasks);
+            //    }));
+            //}
+        }
 
         private CommandMain removeTaskCommand;
         public CommandMain RemoveTaskCommand
         {
-            get
-            {
-                return RemoveTaskCommand ??
-                (removeTaskCommand = new CommandMain(obj =>
-                {
-                    if (SelectedTasksList?.Count > 0)
-                    {
-                        foreach (var selectedTask in SelectedTasksList)
-                            oneTasks.Remove(selectedTask);
+            get;
+            //get
+            //{
+            //    return RemoveTaskCommand ??
+            //    (removeTaskCommand = new CommandMain(obj =>
+            //    {
+            //        if (SelectedTasksIndexList?.Count > 0)
+            //        {
+            //            foreach (var selectedTask in SelectedTasksIndexList)
+            //                oneTasks.RemoveAt(SelectedTaskIndex);
 
-                        GridsList = CreateGridTaskList(oneTasks);
-                    }
-                    else
-                    {
-                        if(SelectedTask != null)
-                        {
-                            oneTasks.Remove(SelectedTask);
-                            GridsList = CreateGridTaskList(oneTasks);
-                        }
-                        else
-                            MessageBox.Show("Выберите одну или несколько задач для удаления", "Ошибка! Не выбрана задача");
-                    }
-                },
-                (obj) => oneTasks.Count > 0
-                ));
-            }
+            //            GridsList = CreateGridTaskList(oneTasks);
+            //        }
+            //        else
+            //        {
+            //            if (SelectedTaskIndex != -1)
+            //            {
+            //                oneTasks.RemoveAt(SelectedTaskIndex);
+            //                GridsList = CreateGridTaskList(oneTasks);
+            //            }
+            //            else
+            //                MessageBox.Show("Выберите одну или несколько задач для удаления", "Ошибка! Не выбрана задача");
+            //        }
+            //    },
+            //    (obj) => oneTasks.Count > 0
+            //    ));
+            //}
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
