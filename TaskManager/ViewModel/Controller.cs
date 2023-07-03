@@ -17,21 +17,25 @@ namespace TaskManager.ViewModel
 {
     internal class Controller : INotifyPropertyChanged
     {
-        public ObservableCollection<Border> GridsList { get; set; }
-        public ObservableCollection<OneTask> oneTasks { get; set; }
-        public ObservableCollection<int> SelectedTasksIndexList { get; set; }
-        public int SelectedTaskIndex { get; set; }
+        public ObservableCollection<OneTask> OneTasks { get; set; }
+        public OneTask SelectedTaskItem { get; set; }
+        public List<OneTask> SelectionTaskMode { get; set; }
 
 
         private string Json { get; set; }
         private string path = "taskList.json";
 
+        private CommandMain addTaskCommand;
+        private CommandMain removeTaskCommand;
+
         public Controller()
         {
             ReadFromJson();
 
+            if (OneTasks == null) OneTasks = new ObservableCollection<OneTask>();
+
             for (int i = 0; i < 10; i++)
-                oneTasks.Add(new OneTask()
+                OneTasks.Add(new OneTask()
                 {
                     Id = i + 1,
                     Title = $"Задача № {i + 1}",
@@ -41,28 +45,22 @@ namespace TaskManager.ViewModel
                     Priority = "Высокий",
                     IsCompleted = false
                 });
-
-            GridsList = CreateGridTaskList(oneTasks);
         }
-
-        private CommandMain addTaskCommand;
+                
         public CommandMain AddTaskCommand
         {
             get;
-            //get {
+            //{
             //    return AddTaskCommand ??
             //    (addTaskCommand = new CommandMain(obj =>
             //    {
             //        OneTask task = new OneTask();
-            //        oneTasks.Insert(0, task);
-            //        SelectedTaskIndex = oneTasks.IndexOf(task);
-
-            //    GridsList = CreateGridTaskList(oneTasks);
+            //        OneTasks.Insert(0, task);
+            //        //SelectedTaskItem = task;
             //    }));
             //}
         }
-
-        private CommandMain removeTaskCommand;
+                
         public CommandMain RemoveTaskCommand
         {
             get;
@@ -102,9 +100,9 @@ namespace TaskManager.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        private void WriteToJson()
+        public void WriteToJson()
         {
-            JsonConvert.SerializeObject(oneTasks);
+            Json = JsonConvert.SerializeObject(OneTasks);
             File.WriteAllText(path, Json);
         }
 
@@ -113,11 +111,11 @@ namespace TaskManager.ViewModel
             try
             {
                 Json = File.ReadAllText(path);
-                oneTasks = JsonConvert.DeserializeObject<ObservableCollection<OneTask>>(Json);
+                OneTasks = JsonConvert.DeserializeObject<ObservableCollection<OneTask>>(Json);
             }
             catch (Exception)
             {
-                oneTasks = new ObservableCollection<OneTask>();
+                OneTasks = new ObservableCollection<OneTask>();
                 MessageBox.Show("Список задач пуст или не существует");
             }            
         }

@@ -22,29 +22,17 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Controller controller = new Controller();
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = new Controller();
-
-            //List<OneTask> oneTasks = new List<OneTask>();
-
-            //for (int i = 0; i < 10; i++)
-            //    oneTasks.Add(new OneTask() {
-            //        Id = i + 1,
-            //        Title = $"Задача № {i + 1}",
-            //        Description = $"Это задача какаято важная №{i + 1} и вообще то это серьезно",
-            //        Begin = DateTime.Now,
-            //        End = DateTime.Now,
-            //        Priority = "Высокий",
-            //        IsCompleted = false
-            //    });
-
-            //Controller controller = new Controller();
-
-            //taskListView.ItemsSource = controller.CreateGridTaskList(oneTasks);
+            DataContext = controller;
         }
-        
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            controller.WriteToJson();
+        }
     }
 }
