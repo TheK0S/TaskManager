@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace TaskManager.ViewModel
 {
-    internal class CommandMain : ICommand
+    public class CommandMain : ICommand
     {
         private Action<object> execute;
         private Func<object, bool> canExecute;

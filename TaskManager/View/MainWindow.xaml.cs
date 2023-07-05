@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +24,13 @@ namespace TaskManager
     public partial class MainWindow : Window
     {
         private Controller controller = new Controller();
+
         public MainWindow()
         {
             InitializeComponent();
 
             DataContext = controller;
+
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

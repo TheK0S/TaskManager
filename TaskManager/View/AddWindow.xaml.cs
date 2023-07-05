@@ -16,14 +16,15 @@ using TaskManager.ViewModel;
 namespace TaskManager.View
 {
     /// <summary>
-    /// Логика взаимодействия для EditWindow.xaml
+    /// Логика взаимодействия для AddWindow.xaml
     /// </summary>
-    public partial class EditWindow : Window
+    public partial class AddWindow : Window
     {
-        public EditWindow(ControllerEditWindow controller)
+        public AddWindow(ControllerAddWindow controller)
         {
             InitializeComponent();
-            DataContext = controller;
+
+            DataContext = controller;            
         }
     }
 }

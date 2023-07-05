@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Closing="Window_Closing">
+        Title="MainWindow" Height="500" Width="1000" Closing="Window_Closing">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="2"/>
@@ -42,28 +42,27 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <Calendar x:Name="calendar" Background="Black" Margin="0 -3 0 5"/>
-            <Button x:Name="completeTask" Content="Отметить выполнено"/>
-            <Button x:Name="addTask" Content="Добавить задачу" Command="{Binding AddTaskCommand}"/>
-            <Button x:Name="editTask" Content="Редактировать задачу"/>
-            <Button x:Name="removeTask" Content="Удалить выбранные" Command="{Binding RemoveTaskCommand}"/>
+            <Calendar x:Name="calendar" Background="Black" Margin="0 -3 0 5" SelectionMode="MultipleRange"/>
+            <Button Content="Отметить выполнено" Command="{Binding SetCompletedCommand}"/>
+            <Button Content="Добавить задачу" Command="{Binding AddTaskCommand}"/>
+            <Button Content="Редактировать задачу" Command="{Binding EditTaskCommand}"/>
+            <Button Content="Удалить выбранную задачу" Command="{Binding RemoveTaskCommand}"/>
         </StackPanel>
 
-        <ListView x:Name="taskListView" Grid.Row="1" Grid.Column="1" 
-                  HorizontalContentAlignment="Stretch" 
+        <ListView x:Name="taskListView" Grid.Row="1" Grid.Column="1"
+                  HorizontalContentAlignment="Stretch"
                   Background="Black"
                   Foreground="Gray"
                   ItemsSource="{Binding OneTasks}"
-                  SelectedItem="{Binding SelectedTaskItem}"
-                  SelectionMode="{Binding SelectionTaskMode}">
+                  SelectedItem="{Binding SelectedTaskItem}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="DarkBlue" BorderThickness="1">
-                        <Grid Margin="10">
+                    <Border BorderBrush="DarkBlue" BorderThickness="2" CornerRadius="5">
+                        <Grid Margin="10" Height="auto">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.5*"/>
                                 <ColumnDefinition/>
-                                <ColumnDefinition Width="0.5*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="80"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -71,11 +70,11 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock x:Name="title" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Title}" FontWeight="Bold" TextAlignment="Center"/>
-                            <TextBlock x:Name="description" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Description}"/>
-                            <TextBlock x:Name="endDate" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding End}"/>
-                            <TextBlock x:Name="priority" Grid.Row="0" Grid.Column="2" Text="{Binding Priority}" TextAlignment="Center"/>
-                            <TextBlock x:Name="isComplete" Grid.Row="2" Grid.Column="2" Text="{Binding IsCompleted}" TextAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Title}" FontWeight="Bold" TextAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding End}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Priority}" TextAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding IsCompleted}" TextAlignment="Center"/>
                         </Grid>
                     </Border>
                 </DataTemplate>

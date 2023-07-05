@@ -12,21 +12,25 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TaskManager.Model;
+using TaskManager.View;
 
 namespace TaskManager.ViewModel
 {
-    internal class Controller : INotifyPropertyChanged
+    internal class Controller
     {
-        public ObservableCollection<OneTask> OneTasks { get; set; }
+        public ObservableCollection<OneTask> OneTasks { get; set; }    
+        public ObservableCollection<DateTime> SelectedDates { get; set; }
+        public List<string> Prioritis { get; set; }
         public OneTask SelectedTaskItem { get; set; }
-        public List<OneTask> SelectionTaskMode { get; set; }
-
 
         private string Json { get; set; }
         private string path = "taskList.json";
 
         private CommandMain addTaskCommand;
         private CommandMain removeTaskCommand;
+        private CommandMain editTaskCommand;
+        private CommandMain setCompletedCommand;
+
 
         public Controller()
         {
@@ -34,70 +38,79 @@ namespace TaskManager.ViewModel
 
             if (OneTasks == null) OneTasks = new ObservableCollection<OneTask>();
 
-            for (int i = 0; i < 10; i++)
-                OneTasks.Add(new OneTask()
-                {
-                    Id = i + 1,
-                    Title = $"Задача № {i + 1}",
-                    Description = $"Это задача какаято важная №{i + 1} и вообще то это серьезно",
-                    Begin = DateTime.Now,
-                    End = DateTime.Now,
-                    Priority = "Высокий",
-                    IsCompleted = false
-                });
+            Prioritis = new List<string> { "Высокий", "Средний", "Низкий" };
         }
                 
         public CommandMain AddTaskCommand
         {
-            get;
-            //{
-            //    return AddTaskCommand ??
-            //    (addTaskCommand = new CommandMain(obj =>
-            //    {
-            //        OneTask task = new OneTask();
-            //        OneTasks.Insert(0, task);
-            //        //SelectedTaskItem = task;
-            //    }));
-            //}
+            get
+            {
+                return addTaskCommand ??
+                (addTaskCommand = new CommandMain(async obj =>
+                {
+                    await TaskRan(new AddWindow(new ControllerAddWindow(OneTasks, Prioritis)));
+                }));
+            }
         }
+                
                 
         public CommandMain RemoveTaskCommand
         {
-            get;
-            //get
-            //{
-            //    return RemoveTaskCommand ??
-            //    (removeTaskCommand = new CommandMain(obj =>
-            //    {
-            //        if (SelectedTasksIndexList?.Count > 0)
-            //        {
-            //            foreach (var selectedTask in SelectedTasksIndexList)
-            //                oneTasks.RemoveAt(SelectedTaskIndex);
-
-            //            GridsList = CreateGridTaskList(oneTasks);
-            //        }
-            //        else
-            //        {
-            //            if (SelectedTaskIndex != -1)
-            //            {
-            //                oneTasks.RemoveAt(SelectedTaskIndex);
-            //                GridsList = CreateGridTaskList(oneTasks);
-            //            }
-            //            else
-            //                MessageBox.Show("Выберите одну или несколько задач для удаления", "Ошибка! Не выбрана задача");
-            //        }
-            //    },
-            //    (obj) => oneTasks.Count > 0
-            //    ));
-            //}
+            get
+            {
+                return removeTaskCommand ??
+                (removeTaskCommand = new CommandMain(obj =>
+                {
+                    if (SelectedTaskItem != null)
+                        OneTasks.Remove(SelectedTaskItem);
+                    else
+                        MessageBox.Show("Выберите задачу для удаления", "Ошибка! Не выбрана задача", MessageBoxButton.OK, MessageBoxImage.Error);
+                },
+                (obj) => OneTasks.Count > 0
+                ));
+            }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        public CommandMain EditTaskCommand
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            get
+            {
+                return editTaskCommand ??
+                    (editTaskCommand = new CommandMain(async obj =>
+                    {
+                        if (SelectedTaskItem != null)
+                            await TaskRan(new EditWindow(new ControllerEditWindow(SelectedTaskItem, Prioritis)));
+                        else
+                            MessageBox.Show("Выберите задачу для изменения", "Ошибка! Не выбрана задача", MessageBoxButton.OK, MessageBoxImage.Error);
+                    },
+                    (obj) => OneTasks.Count > 0
+                    ));
+            }
+        }
+
+        public CommandMain SetCompletedCommand
+        {
+            get
+            {
+                return setCompletedCommand ??
+                    (setCompletedCommand = new CommandMain(Obj => 
+                    {
+                        if (SelectedTaskItem != null)
+                        {
+                            SelectedTaskItem.IsCompleted = true;
+                        }
+                        else
+                            MessageBox.Show("Выберите задачу для изменения статуса", "Ошибка! Не выбрана задача", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }));
+            }
+        }
+
+        private async Task TaskRan(Window window)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                window.Show();
+            });
         }
 
         public void WriteToJson()
@@ -118,69 +131,6 @@ namespace TaskManager.ViewModel
                 OneTasks = new ObservableCollection<OneTask>();
                 MessageBox.Show("Список задач пуст или не существует");
             }            
-        }
-
-        public ObservableCollection<Border> CreateGridTaskList(ObservableCollection<OneTask> tasksList)
-        {
-            ObservableCollection<Border> borderList = new ObservableCollection<Border>();
-
-            foreach (var task in tasksList)
-            {
-                Grid grid = new Grid();
-                grid.Margin = new Thickness(10);
-
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0.5, GridUnitType.Star) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0.5, GridUnitType.Star) });
-
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.RowDefinitions.Add(new RowDefinition());
-
-                TextBlock title = new TextBlock();
-                title.Text = task.Title;
-                title.FontWeight = FontWeights.Bold;
-                title.TextAlignment = TextAlignment.Center;
-                Grid.SetRow(title, 0);
-                Grid.SetColumnSpan(title, 2);
-                grid.Children.Add(title);
-
-                TextBlock description = new TextBlock();
-                description.Text = task.Description;
-                Grid.SetRow(description, 1);
-                Grid.SetColumnSpan(description, 2);
-                grid.Children.Add(description);
-
-                TextBlock endDate = new TextBlock();
-                endDate.Text = task.End.ToString();
-                Grid.SetRow(endDate, 2);
-                Grid.SetColumnSpan(endDate, 2);
-                grid.Children.Add(endDate);
-
-                TextBlock priority = new TextBlock();
-                priority.Text = task.Priority;
-                priority.TextAlignment = TextAlignment.Center;
-                Grid.SetRow(priority, 0);
-                Grid.SetColumn(priority, 2);
-                grid.Children.Add(priority);
-
-                TextBlock isComplete = new TextBlock();
-                isComplete.Text = task.IsCompleted ? "Выполнена" : "Не выполнена";
-                isComplete.TextAlignment = TextAlignment.Center;
-                Grid.SetRow(isComplete, 2);
-                Grid.SetColumn(isComplete, 2);
-                grid.Children.Add(isComplete);
-
-                // Добавляем Grid в Border и Border в окно
-                Border border = new Border();
-                border.BorderBrush = task.IsCompleted ? Brushes.Green : Brushes.DarkBlue;
-                border.BorderThickness = new Thickness(1);
-                border.Child = grid;
-
-                borderList.Add(border);
-            }
-
-            return borderList;
-        }
+        }       
     }
 }

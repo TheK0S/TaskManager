@@ -1,4 +1,4 @@
-﻿<Window x:Class="TaskManager.View.EditWindow"
+﻿<Window x:Class="TaskManager.View.AddWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TaskManager.View"
         mc:Ignorable="d"
         Background="Black"
-        Title="EditWindow" Height="500" Width="800">
+        Title="AddWindow" Height="350" Width="600">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="Gray"/>
@@ -14,16 +14,15 @@
         </Style>
     </Window.Resources>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20 0" Width="500">
-        <TextBlock Text="Изменение задачи" TextAlignment="Center" FontSize="20" FontWeight="Bold"/>
-        <TextBlock Text="Внимание данные изменяются автоматически при изменении полей" TextAlignment="Center" Foreground="DarkRed"/>
-        <TextBlock Text="Заголовок задачи"/>
+        <TextBlock Text="Введите заголовок задачи"/>
         <TextBox Text="{Binding CurrentTask.Title}"/>
-        <TextBlock Text="Описание задачи"/>
+        <TextBlock Text="Введите описание задачи"/>
         <TextBox Text="{Binding CurrentTask.Description}" TextWrapping="Wrap"/>
-        <TextBlock Text="Дата выполнения"/>
+        <TextBlock Text="Выберите дату выполнения"/>
         <DatePicker SelectedDate="{Binding CurrentTask.End}" Background="Black"/>
-        <TextBlock Text="Приоритет" Margin="10"/>
-        <ComboBox ItemsSource="{Binding Prioritis}" SelectedItem="{Binding CurrentTask.Priority}"/>
-        <CheckBox Content="  Отметка о выполнении" Foreground="Gray" Margin="0 20 0 0" IsChecked="{Binding CurrentTask.IsCompleted}"/>        
+        <TextBlock Text="Выберите приоритет" Margin="10"/>
+        <ComboBox ItemsSource="{Binding Prioritis}" SelectedItem="{Binding SelectedPriority}"/>
+        <Button Content="Добавить" Command="{Binding AddCommand}" Margin="0 20" Background="Black" Foreground="Gray"/>
     </StackPanel>
+    
 </Window>
