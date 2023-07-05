@@ -19,7 +19,10 @@
             <Setter Property="Margin" Value="10 5"/>
         </Style>
     </Window.Resources>
-    <Grid Background="Black">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Image/desktop-1920x1080.jpg" Stretch="Fill"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition/>
@@ -42,7 +45,7 @@
         <ListView x:Name="taskListView" Grid.Row="1" Grid.Column="1"
                   HorizontalContentAlignment="Stretch"
                   VerticalAlignment="Stretch"
-                  Background="Black"
+                  Background="Transparent"
                   Foreground="Gray"
                   ItemsSource="{Binding OneTasks}"
                   SelectedItem="{Binding SelectedTaskItem}">
