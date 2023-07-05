@@ -18,10 +18,12 @@ namespace TaskManager.ViewModel
 {
     internal class Controller
     {
+
         public ObservableCollection<OneTask> OneTasks { get; set; }    
         public ObservableCollection<DateTime> SelectedDates { get; set; }
         public List<string> Prioritis { get; set; }
         public OneTask SelectedTaskItem { get; set; }
+        public string FilterText { get; set; }
 
         private string Json { get; set; }
         private string path = "taskList.json";
@@ -30,7 +32,6 @@ namespace TaskManager.ViewModel
         private CommandMain removeTaskCommand;
         private CommandMain editTaskCommand;
         private CommandMain setCompletedCommand;
-
 
         public Controller()
         {
@@ -104,6 +105,7 @@ namespace TaskManager.ViewModel
                     }));
             }
         }
+
 
         private async Task TaskRan(Window window)
         {

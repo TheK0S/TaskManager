@@ -4,10 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager"
+        xmlns:viewModel="clr-namespace:TaskManager.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1000" Closing="Window_Closing">
     <Window.Resources>
-        <Style TargetType="TextBlock">
+            <viewModel:BoolToStringConverter x:Key="BoolToStringConverter"/>
+            <viewModel:BoolToColorConverter x:Key="BoolToColorConverter"/>
+            <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="2"/>
         </Style>
         <Style TargetType="Button">
@@ -26,20 +29,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" x:Name="headerCurrentDate" Width="250"/>
-
-        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock Text="Поиск" Foreground="Gray" Margin="0 0 20 0"/>
-            <TextBox  x:Name="searchField" Width="250" Margin="0 0 10 0" Foreground="Gray" BorderBrush="Black" SelectionTextBrush="#FF5A5A5A">
-                <TextBox.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF353535" Offset="0.236"/>
-                        <GradientStop Color="White" Offset="1"/>
-                        <GradientStop Color="Black" Offset="0.93"/>
-                    </LinearGradientBrush>
-                </TextBox.Background>
-            </TextBox>
-        </StackPanel>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Диспетчер Задач" Foreground="Gray" FontWeight="Black" TextAlignment="Center"/>
 
         <StackPanel Grid.Row="1" Grid.Column="0">
             <Calendar x:Name="calendar" Background="Black" Margin="0 -3 0 5" SelectionMode="MultipleRange"/>
@@ -51,13 +41,14 @@
 
         <ListView x:Name="taskListView" Grid.Row="1" Grid.Column="1"
                   HorizontalContentAlignment="Stretch"
+                  VerticalAlignment="Stretch"
                   Background="Black"
                   Foreground="Gray"
                   ItemsSource="{Binding OneTasks}"
                   SelectedItem="{Binding SelectedTaskItem}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="DarkBlue" BorderThickness="2" CornerRadius="5">
+                    <Border BorderBrush="{Binding IsCompleted, Converter={StaticResource BoolToColorConverter}}" BorderThickness="2" CornerRadius="5">
                         <Grid Margin="10" Height="auto">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -71,10 +62,10 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Title}" FontWeight="Bold" TextAlignment="Center"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Description}" TextWrapping="Wrap"/>
                             <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding End}"/>
                             <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Priority}" TextAlignment="Center"/>
-                            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding IsCompleted}" TextAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding IsCompleted, Converter={StaticResource BoolToStringConverter}}" TextAlignment="Center"/>
                         </Grid>
                     </Border>
                 </DataTemplate>

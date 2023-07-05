@@ -92,6 +92,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModel\BoolToColorConverter.cs" />
+    <Compile Include="ViewModel\BoolToStringConverter.cs" />
     <Compile Include="ViewModel\CommandMain.cs" />
     <Compile Include="ViewModel\Controller.cs" />
     <Compile Include="ViewModel\ControllerAddWindow.cs" />
